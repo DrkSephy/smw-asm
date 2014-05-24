@@ -65,4 +65,20 @@ X_SPEED     dcb $08,$F8,$08,$F8,$0C,$F4,$10,$F0,$14,$EC
 
     RTL
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                       Sprite code JSL                   ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    dcb "MAIN"
+    PHB                     ; \
+    PHK                     ; | main sprite function, simply calls subroutine
+    subroutine              ; |
+    PLB                     ; |
+    JSR SPRITE_CODE_START   ; |
+    PLB                     ; |
+    RTL                     ; /
+
+    
+
+
 
