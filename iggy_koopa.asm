@@ -761,3 +761,104 @@ SUB_HAMMER_THROW
             STA $157C, y
 
 RETURN10    RTS                         ; return
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                       Aiming Routine                    ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+CODE_01BF6A:
+        
+            STA $01 
+            PHX                         ;\ preserve sprite indexes of Magickoopa and magic
+            PHY                         ;/
+            JSR SUB_VERT_POS            ; $0E = vertical distance to mario
+            STY $02                     ; $02 = vertical distance to mario
+            LDA $0E                     ;\ $0C = vertical distance to mario, positive
+            BPL CODE_01BF7C             ;|
+            EOR #$FF                    ;|
+            CLC                         ;|
+            ADC #$01                    ;/
+
+CODE_01BF7C:    
+
+            STA $0C                     ;/
+            JSR SUB_HORZ_POS            ;| $0F = horizontal distance to mario
+            STY $03                     ;| $03 = horizontal distance to mario
+            LDA $0F                     ;\ $0D = horizontal distance to mario, positive
+            BPL CODE_01BF8C 
+            EOR #$FF
+            CLC
+            ADC #$01
+
+CODE_01BF8C: 
+
+            STA $0D                     ;\
+            LDY #$00                    ;|
+            LDA $0D                     ;| if vertical distance less than horizontal distance
+            CMP $0C                     ;|
+            BCS CODE_01BF9F             ;/ branch
+            INY                         ;| set y register
+            PHA                         ;| switch $0C and $0D
+            LDA $0C                     ;|
+            STA $0D                     ;|
+            PLA                         ;|
+            STA $0C                     ;/
+
+CODE_01BF9F:
+        
+            LDA #$00                    ;\ zero out $00 and $0B
+            STA $0B                     ;|
+            STA $00                     ;|
+            LDX $01                     ;/ divide $0C by $0D
+
+CODE_01BFA7: 
+
+            LDA $0B                     ;\ if $0C + loop counter is < $0D
+            CLC                         ;|
+            ADC $0C                     ;|
+            CMP $0D                     ;|
+            BCC CODE_01BFB4             ;| branch
+            SBC $0D                     ;| else, subtract $0D
+            INC $00                     ;/ and increase $00
+
+CODE_01BFB4: 
+
+            STA $0B                     ;\
+            DEX                         ;| if cycles left to run,
+            BNE CODE_01BFA7             ;/ go to start of loop
+            TYA                         ;\ if $0C and $0D was not switched,
+            BEQ CODE_01BFC6             ;| branch
+            LDA $00                     ;/ else, switch $00 and $01 
+            PHA     
+            LDA $01 
+            STA $00
+            PLA
+            STA $01 
+
+CODE_01BFC6:        
+
+            LDA $00                 ;\ if horizontal distance was inverted,
+            LDY $02                 ; | invert $00
+            BEQ CODE_01BFD3         ; |
+            EOR #$FF                ; |
+            CLC                     ; |
+            ADC #$01                ; |
+            STA $00                 ;/
+
+CODE_01BFD3:        
+
+            LDA $01                 ;\ if vertical distance was inverted,
+            LDY $03                 ;| invert $01
+            BEQ CODE_01BFE0         ; |
+            EOR #$FF                ; |
+            CLC                     ; |
+            ADC #$01                ; |
+            STA $01                 ;/
+
+CODE_01BFE0:        
+
+            PLY                 ;\ retrieve Magikoopa and magic sprite indexes
+            PLX                 ;/
+            RTS                 ; return
+
+
