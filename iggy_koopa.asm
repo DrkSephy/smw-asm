@@ -702,3 +702,62 @@ NO_OBJ_CONTACT1
 RETURN9     JSL $01802A                 ; apply speed
             RTS                         ; return
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                       Hammer Routine                    ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+X_OFFSET     dcb $06, $FA
+X_OFFSET2    dcb $00, $FF
+
+SUB_HAMMER_THROW
+
+            JSL $02A9DE                 ;\ get an index to an unused sprite slot, return if all slots are full
+            BMI RETURN10                ;/ after: Y has index of sprite being generated
+            PHX
+            TYX
+            LDA #$20                    ; play hammer sound effect
+            STA $1DF9
+            LDA #$08
+            STA $14C8, x
+            LDA #SPRITE_TO_GEN
+            STA $7FAB9E, x
+            JSL $07F7D2
+            JSL $0187A7
+            LDA #$08
+            STA $7FAB10, x
+            PLX
+
+            PHY
+            LDA $157C, x
+            TAY
+            LDA $E4, x                  ; set x-low position for new sprite
+            CLC
+            ADC X_OFFSET, y
+
+            PHY
+            LDA $157C, x
+            TAY
+            LDA $14E0, x                ; set x-high position for new sprite
+            ADC X_OFFSET2, y
+            PLY
+           
+            LDA $D8, x                  ;\ set y position for new sprite
+            SEC                         ;|
+            SBC #$0E                    ;|
+            STA $00D8, y                ;|
+            LDA $14D4, x                ;|
+            SBC #$00                    ;|
+            STA $14D4, y                ;/
+
+            PHX                         ;\ before: X must have index of sprite being generated
+            TYX                         ;| routine clears all old sprite values
+            JSL $07F7D2                 ;| and loads in new values for the 6 main sprite tables
+            JSL $0187A7                 ;| get table values for custom sprite
+            LDA #$88
+            STA EXTRA_BITS, x
+            PLX                         ;/
+
+            LDA $157C, x 
+            STA $157C, y
+
+RETURN10    RTS                         ; return
