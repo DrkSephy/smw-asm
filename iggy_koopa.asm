@@ -196,9 +196,9 @@ SPRITE_WINS LDA $1497           ;\ if mario is invincible
             TYA                 ;|
             STA $157C, x        ;/
             JSL $00F5B7         ; hurt mario
-            
+
 NO_CONTACT  LDA SPRITE_STATE,x
-        CMP #$00
+        CMP 8#$00
         BEQ WALKING
         CMP #$01
         BEQ RETREATING0
@@ -219,11 +219,26 @@ NO_CONTACT  LDA SPRITE_STATE,x
         CMP #$09
         BEQ COUNTDOWN0
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                       Sprite main code                  ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+RETREATING0 JMP RETREATING
+RISING0     JMP RISING
+FLYING0     JMP FLYING
+WAITING0    JMP WAITING
+DROPPING0   JMP DROPPING
+SPINNING0   JMP SPINNING
+NOW_FIRE0   JMP NOW_FIRE
+DEAD0       JMP DEAD
+COUNTDOWN0  JMP COUNTDOWN
 
+WALKING
 
-
-
-
-
-
+    LDA $1588, x                ;\ if sprite collides with an object
+    AND #$03                    ;|
+    BEQ NO_OBJ_CONTACT          ;|
+    LDA $157C, x                ;| flip the direction status
+    EOR #$01                    ;|
+    STA $157C, x                ;/
+    
