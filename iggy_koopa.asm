@@ -140,7 +140,19 @@ ALIVE   CMP #$08              ;\ if status != 8, return
         LDA $9D               ;| return if sprite is locked
         BNE RETURN            ;/
 
-
+NO_JUMP JSR SUB_OFF_SCREEN_X0 ; only process sprite while on screen
+    
+        JSL $018032            ; interact with sprites
+        JSL $01A7DC            ; interact with mario
+        BCC NO_CONTACT         ; return if no contact
+        LDA $154C, x           ;\ if sprite invincibility timer > 0....
+        BNE NO_CONTACT         ;/ go to NO_CONTACT
+        LDA #$08               ;\ sprite invincibility timer = $08
+        STA $154C, x           ;/
+        LDA $7D                ;\ if mario's y speed < 10
+        CMP #$10               ;| sprite will hurt mario
+        BMI SPRITE_WINS        ;/ 
+        
 
 
 
