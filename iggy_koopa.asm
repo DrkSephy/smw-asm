@@ -49,4 +49,20 @@
 
 X_SPEED     dcb $08,$F8,$08,$F8,$0C,$F4,$10,$F0,$14,$EC
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                       Sprite init JSL                   ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+    dcb "INIT"
+    PHY
+    JSR SUB_HORZ_POS
+    TYA
+    STA $157C, x
+    PLY
+    LDA $1588, x    ; if on the ground, reset the turn counter
+    ORA #$04        
+    STA $1588, x    ; if on the ground, reset the turn counter
+
+    RTL
+
 
