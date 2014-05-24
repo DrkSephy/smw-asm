@@ -30,17 +30,17 @@
     RISE_SPEED      = $E0
     FALL_SPEED      = $10
 
-    IME_TO_SHAKE   = $18
+    TIME_TO_SHAKE   = $18
     SOUND_EFFECT    = $09 
     TIME_ON_GROUND  = $40
 
     SPRITE_TO_GEN   = $16
 
-    NEXT_STATE  dcb $01,$02
+    NEXT_STATE      dcb $01,$02
     NEXT_STATE2a    dcb $04,$05
     NEXT_STATE2b    dcb $04,$05,$07
-    X_SPEED2    dcb $40,$C0
-    X_SPEED3    dcb $18,$E8
+    X_SPEED2        dcb $40,$C0
+    X_SPEED3        dcb $18,$E8
     KILLED_X_SPEED  dcb $F0,$10
     SPRITE_STATE    = $C2
 
@@ -197,7 +197,7 @@ SPRITE_WINS LDA $1497           ;\ if mario is invincible
             STA $157C, x        ;/
             JSL $00F5B7         ; hurt mario
 
-            
+
 
 
 
