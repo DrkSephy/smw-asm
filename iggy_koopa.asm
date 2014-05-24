@@ -181,7 +181,23 @@ MARIO_WINS
 SPRITE_DEAD LDA #$09 
     
         STA SPRITE_STATE, x
+
+NO_COUNT
         
+        LDA #$02                ;\ sound effect
+        STA $1DF9               ;/
+
+NEW_RETURN RTS                  ; return
+
+SPRITE_WINS LDA $1497           ;\ if mario is invincible
+            ORA $187A           ;| or mario is on yoshi
+            BNE NO_CONTACT      ;/ return
+            JSR SUB_HORZ_POS    ;\ set new sprite direction
+            TYA                 ;|
+            STA $157C, x        ;/
+            JSL $00F5B7         ; hurt mario
+
+            
 
 
 
