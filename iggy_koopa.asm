@@ -661,5 +661,44 @@ DEAD        LDA FREEZE_TIMER, x
 
 RETURN8     RTS
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                           State 9                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+COUNTDOWN
+
+            LDA $1588, x                ;\ if sprite is in contact with an object
+            AND #$03                    ;|
+            BEQ NO_OBJ_CONTACT1         ;|
+            LDA #$04                    ;/ kill object
+            STA $14C8, x
+            JSL $07FC3B                 ; show star animation
+            LDA #$08                    ;\ play sound effect
+            STA $1DF9                   ;/ 
+
+            LDA EXTRA_BITS, x
+            AND #$04
+            BEQ CLEAR_END
+
+GOAL        
+            
+            DEC $13C6                   ; prevent mario from walking at the level end
+            LDA #$FF                    ;\ set goal
+            STA $1493                   ;/
+            LDA #$0B                    ;\ set ending music
+            STA $1DFB                   ;/
+            RTS                         ; return
+            BRA CONTINUE_END
+
+CLEAR_END
+CONTINUE_END
+
+NO_OBJ_CONTACT1
+            
+            LDY $157C, x                ;\ set x speed based on direction
+            LDA X_SPEED2, y             ;| set y speed based on direction
+            STA $B6, x                  ;/
+
+RETURN9     JSL $01802A                 ; apply speed
+            RTS                         ; return
 
