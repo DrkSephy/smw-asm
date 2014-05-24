@@ -152,7 +152,37 @@ NO_JUMP JSR SUB_OFF_SCREEN_X0 ; only process sprite while on screen
         LDA $7D                ;\ if mario's y speed < 10
         CMP #$10               ;| sprite will hurt mario
         BMI SPRITE_WINS        ;/ 
+
+
+
+MARIO_WINS
+
+        JSL $01AA33            ; set mario's speed
+        JSL $01AB99            ; display contact graphic
         
+        LDA SPRITE_STATE, x    ; return if sprite is invulnerable
+        CMP #$00               
+        BNE SPRITE_WINS
+
+        JSR SUB_STOMP_PTS       ; give mario points after stomping on enemy
+        LDA #$28                ;\ stomp sound effect
+        STA $1DFC               ;/
+        LDA #$A0                ;\ set THROW_FIRE timer
+        STA $1564, x            ;/
+        INC $1534, x            ; increment sprite hit counter
+        LDA $1534, x            ;\ if sprite hit counter === 3
+        CMP #HIT_POINTS         ;|
+        BEQ SPRITE_DEAD         ;/
+
+        LDA $#06
+        STA SPRITE_STATE. x
+        BRA NEW_RETURN
+
+SPRITE_DEAD LDA #$09 
+    
+        STA SPRITE_STATE, x
+        
+
 
 
 
