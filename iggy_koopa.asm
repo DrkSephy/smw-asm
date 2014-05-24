@@ -504,4 +504,31 @@ IncreaseWait:
 RETURN5 
             RTS
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                           State 5                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+DROPPING    JSL $01801A                ; apply speed
+            LDA SPRITE_Y_SPEED, x      ; increase speed if below the max
+            CMP #MAX_Y_SPEED
+            BCS DONT_INC_SPEED
+            ADC #SPRITE_GRAVITY2
+            STA SPRITE_Y_SPEED, x
+
+DONT_INC_SPEED
+
+            JSL $019138                 ; interact with objects
+            LDA $1588, x                ; return if not on the ground
+            AND #IS_ON_GROUND
+            BEQ RETURN6 
+            JSR SUB_HORZ_POS            ;\ always face Mario
+            TYA                         ;|
+            STA $157C, x                ;/
+
+            LDA #TIME_ON_GROUND         ; set time to stay on ground
+            STA FREEZE_TIMER, x
+            STZ SPRITE_STATE, x
+
+RETURN6     RTS
+
 
