@@ -466,3 +466,42 @@ NORMALRT2   INX                     ; amount plus 1
 ENDRANDOM2  PLP
             PLX
             RTL
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                           State 4                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+WAITING     LDA #$00
+            STA SPRITE_Y_SPEED, x   ; set intial speed
+            JSR Wait                ; jump to custom code
+            JSL #01801A             ; apply speed
+            LDA SPRITE_Y_SPEED, x   ; increase speed if below the max
+            CMP #MAX_Y_SPEED
+            BCS DONT_INC_SPEED2
+            ADC #SPRITE_GRAVITY2
+            STA SPRITE_Y_SPEED, x
+
+DONT_INC_SPEED2
+        
+            JSL $019138             ; interact with objects
+            LDA $1564, x            ; return if sprite is invulnerable
+            CMP #$00
+            BNE RETURN5
+
+Wait:
+
+            LDA #$A0                ; if timer isn't A0
+            CMP $1528, x 
+            BNE IncreaseWait        ; increase the timer
+            STZ $1528, x            ; reset the timer
+            JSR SUB_HAMMER_THROW
+            DEC SPRITE_STATE, x     ; decrease sprite state to 1
+            RTS                     ; return
+
+IncreaseWait:
+            INC $1528, x            ; increase timer
+
+RETURN5 
+            RTS
+
+
