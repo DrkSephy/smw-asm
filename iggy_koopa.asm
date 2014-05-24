@@ -424,3 +424,45 @@ Bolt:
             STA SPRITE_STATE, x
             BRA FINISH_STATE
 
+HEALTHY
+        
+            PHX
+            LDA #$01
+            JSL RANDOM2
+            TAX
+            LDA NEXT_STATE2a, x     ; set sprite number for new sprite
+            PLX
+            STA SPRITE_STATE, x
+
+FINISH_STATE STZ $1504, x           ; reset timer
+             RTS                    ; return
+
+IncreaseBolt: 
+            INC $1504, x            ; increase timer
+
+RETURN5     RTS
+
+RANDOM2     PHX
+            PHP
+            SEP #$30
+            PHA
+            JSL $01ACF9             ; random number generation routine
+            PLX
+            CPX #$FF                ;\ if max is FF, handle the exception
+            BNE NORMALRT2           ;|
+            LDA $148B               ;|
+            BRA ENDRANDOM2          ;/
+
+NORMALRT2   INX                     ; amount plus 1
+            LDA $148B               ;\
+            STA $4202               ;| multiple with hardware registers
+            STX $4203               ;|
+            NOP                     ;|
+            NOP                     ;|
+            NOP                     ;|
+            NOP                     ;/
+            LDA $4217 
+
+ENDRANDOM2  PLP
+            PLX
+            RTL
