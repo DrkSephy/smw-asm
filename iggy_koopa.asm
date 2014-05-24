@@ -397,3 +397,30 @@ FLYING
             STA $157C, x            ;/
             STZ $AA, x
 
+NO_OBJ_CONTACT3
+            LDY $157C, x            ;\ set x speed based on direction
+            LDA X_SPEED3, y         ;| set y speed based on direction
+            STA $B6, x              ;/
+
+            JSR Bolt
+            JSL $01802A             ; update position based on speed values
+
+Bolt: 
+            LDA #$D0                ; if timer isn't C0
+            CMP $1504, x 
+            BNE IncreaseBolt        ; increase it
+
+            LDA $1534, x
+            CMP #$02
+            BCC HEALTHY
+
+            PHX
+            LDA #$02
+            JSL RANDOM2
+            TAX
+            LDA NEXT_STATE2b, x     ; set sprite number for new sprite
+            PLX
+
+            STA SPRITE_STATE, x
+            BRA FINISH_STATE
+
