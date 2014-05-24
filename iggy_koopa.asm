@@ -78,7 +78,27 @@ X_SPEED     dcb $08,$F8,$08,$F8,$0C,$F4,$10,$F0,$14,$EC
     PLB                     ; |
     RTL                     ; /
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                       Sprite main code                  ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+RETURN          RTS
+SPRITE_CODE_START
     
+    LDA SPRITE_STATE, x     ;\ check state of sprite
+    CMP #$02                ;| compare values
+    BNE ON_CEILING          ;| is the sprite on the ceiling? 
+    JSR UPSIDE_GFX          ;| if true, play upside-down animation
+    BRA CONTINUE
+
+ON_CEILING LDA SPRITE_STATE, x ; rebuilding the sprite
+    
+    CMP #$03
+    BNE UPSIDE_WAIT
+    JSR UPSIDE_GFX          ; graphics routine when the extra bit is set
+    BRA CONTINUE
+
 
 
 
