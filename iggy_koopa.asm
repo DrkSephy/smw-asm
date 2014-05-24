@@ -580,3 +580,67 @@ RETURN7
             
             RTS
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                           State 7                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+NOW_FIRE    LDA #$00
+            STA SPRITE_Y_SPEED      ; set initial speed
+            JSR Fire                ; jump to custom code
+            JSL $01801A             ; apply speed
+            LDA SPRITE_Y_SPEED, x   ; increase speed if below the max
+            CMP #MAX_Y_SPEED
+            BCS DONT_INC_SPEEDF
+            ADC #SPRITE_GRAVITY2
+            STA SPRITE_Y_SPEED, x
+
+DONT_INC_SPEEDF
+            
+            JSL $019138             ; interact with objects
+            LDA $1564, x            ; return if sprite is invulnerable
+            CMP #$00
+            BNE RETURN7
+
+Fire:
+        
+            LDA #$A0                ; if timer isn't A0
+            CMP $1504, x            
+            BNE IncreaseFire        ; increase it
+            STZ $1504, x            ; reset timer
+            LDA #$03
+            STA SPRITE_STATE, x
+            RTS                     ; return
+
+IncreaseFire:
+
+            LDA $1504, x            ; check if the timer is greater than $60
+            CMP #$20
+            BNE ONE_SHOT
+            JSR SUB_FIRE_THROW
+            BRA INC_TIME2
+
+ONE_SHOT    CMP #$40
+            BNE TWO_SHOTS
+            JSR SUB_FIRE_THROW
+            BRA INC_TIME2
+
+TWO_SHOTS   CMP #$60
+            BNE THREE_SHOTS
+            JSR SUB_FIRE_THROW
+            BRA INC_TIME2
+
+THREE_SHOTS CMP #$80
+            BNE FOUR_SHOTS
+            JSR SUB_FIRE_THROW
+            BRA INC_TIME2
+
+FOUR_SHOTS  CMP #$A0
+            BRE NO_FIRE
+            JSR SUB_FIRE_THROW
+
+NO_FIRE     
+INC_TIME2   INC $1504, x             ; increase timer
+
+RETURN7     RTS
+
+
