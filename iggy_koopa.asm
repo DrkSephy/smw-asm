@@ -643,4 +643,23 @@ INC_TIME2   INC $1504, x             ; increase timer
 
 RETURN7     RTS
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                           State 8                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+DEAD        LDA FREEZE_TIMER, x
+            BNE RETURN8
+            STZ SPRITE_X_SPEED, x
+            LDA $0F30
+            AND $01
+            BNE RETURN8
+            INC SMASH_STATUS, x
+            LDA SMASH_STATUS, x
+            CMP #$02
+            BNE RETURN8
+            INC SPRITE_STATE, x         ; change state to falling
+
+RETURN8     RTS
+
+
 
