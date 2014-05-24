@@ -128,7 +128,19 @@ TOSS_FIREBALLS
     JSR SHELL_GFX
     BRA CONTINUE
 
-    
+
+CLEAR JSR, SUB_GFX          ; graphics routine when extra bit is clear
+
+CONTINUE 
+
+    LDA $14C8, x            ; return if sprite status != 8
+
+ALIVE   CMP #$08              ;\ if status != 8, return
+        BNE RETURN            ;| 
+        LDA $9D               ;| return if sprite is locked
+        BNE RETURN            ;/
+
+
 
 
 
