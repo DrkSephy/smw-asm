@@ -262,3 +262,35 @@ ON_GROUND LDA $1588, x          ; if on the ground, reset the turn counter
         STZ $AA, x
         BRA X_TIME
 
+FALLING LDA $1588, x            ; if on the ground, reset the turn counter
+        AND #$04 
+        BEQ IN_AIR
+        LDA #$10                ;\ y speed = 10
+        STA $AA, x              ;/
+
+X_TIME  LDA $1534, x            ;\ set x speed based on total HP
+        ASL
+        CLC
+        ADC $157C, x            ; and set direction
+        LDA X_SPEED, y
+        STA $86, x
+        JSR Hop                 ; jump to custom subroutine
+
+Hop: 
+        LDA #$D0                ; if the time isn't D0,
+        CMP $1504, x            ;
+        BNE IncreaseHop         ; increase it
+        STZ $1504, x            ; reset timer.
+
+        PHX
+        LDA #$01
+        JSL RANDOM
+        TAX
+        LDA NEXT_STATE, x       ;\ set sprite number for new sprite
+        PLX
+        STA SPRITE_STATE, x
+        RTS                     ; return
+
+IncreaseHop:
+
+        INC $1504, x            ; increase timer 
