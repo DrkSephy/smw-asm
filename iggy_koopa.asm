@@ -379,3 +379,21 @@ RISE        LDA #RISE_SPEED         ; set rising speed and apply it
             JSL $01801A
 
 RETURN4     RTS
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                           State 3                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+FLYING 
+    
+            LDA H_OFFSCREEN, x      ; return if offscreen horizontally
+            BNE RETURN5
+            STZ SPRITE_Y_SPEED, x
+            LDA $1588, x            ;\ if sprite collides with an object
+            AND #$03                ;|
+            BEQ NO_OBJ_CONTACT3     ;|
+            LDA $157C, x            ;| flip the direction flag
+            EOR #$01                ;|
+            STA $157C, x            ;/
+            STZ $AA, x
+
