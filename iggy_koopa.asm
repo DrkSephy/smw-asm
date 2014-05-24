@@ -196,6 +196,29 @@ SPRITE_WINS LDA $1497           ;\ if mario is invincible
             TYA                 ;|
             STA $157C, x        ;/
             JSL $00F5B7         ; hurt mario
+            
+NO_CONTACT  LDA SPRITE_STATE,x
+        CMP #$00
+        BEQ WALKING
+        CMP #$01
+        BEQ RETREATING0
+        CMP #$02
+        BEQ RISING0
+        CMP #$03
+        BEQ FLYING0
+        CMP #$04
+        BEQ WAITING0
+        CMP #$05
+        BEQ DROPPING0
+        CMP #$06
+        BEQ SPINNING0
+        CMP #$07
+        BEQ NOW_FIRE0
+        CMP #$08
+        BEQ DEAD0
+        CMP #$09
+        BEQ COUNTDOWN0
+
 
 
 
