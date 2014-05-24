@@ -220,7 +220,7 @@ NO_CONTACT  LDA SPRITE_STATE,x
         BEQ COUNTDOWN0
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;                       Sprite main code                  ;
+;                          State 01                       ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 RETREATING0 JMP RETREATING
@@ -321,3 +321,39 @@ NORMALRT INX                    ; increase by plus 1
 ENDRANDOM PLP
         PLX
         RTL
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                           State 1                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+RETREATING LDA #$00
+           STA SPRITE_Y_SPEED, x    ; set initial speed
+           JSR Hop2                 ; jump to custom code
+           JSL $01801A              ; apply speed
+           LDA SPRITE_Y_SPEEd, x    ; if speed below max, increase it
+           CMP #MAX_Y_SPEED
+           BCS DONT_INC_SPEED
+           ADC #SPRITE_GRAVITY2
+           STA SPRITE_Y_SPEED, x
+
+DONT_INC_SPEED
+            JSL #019138             ; interact with objects
+            LDA $1564, x            ; return if sprite is invulnerable
+            CMP #$00
+            BNE RETURN3
+
+Hop2: 
+
+            LDA #$A0                ; if timer isn't A0,
+            CMP $1528, x            
+            BNE IncreaseHop2        ; increase the timer
+            STZ $1528, x            ; reset timer
+            JSR SUB_HAMMER_THROW
+            DEC SPRITE_STATE, x     ; decrease sprite state to 1 
+            RTS                     ; return
+
+IncreaseHop2: 
+
+            INC $1528, x            ; increase timer
+
+RETURN3     RTS
