@@ -241,4 +241,24 @@ WALKING
     LDA $157C, x                ;| flip the direction status
     EOR #$01                    ;|
     STA $157C, x                ;/
-    
+
+NO_OBJ_CONTACT
+
+    LDA EXTRA_BITS, x
+    AND #$04
+    BEQ FALLING
+
+    LDA $1588, x                ; run the subroutine if the sprite is in the air
+    ORA $151C, x                ; and if it isn't turning
+    BNE ON_GROUND
+    JSR SUB_CHANGE_DIR
+    LDA #$01                    ; set that the sprite is turning
+    STA $151C, x 
+
+ON_GROUND LDA $1588, x          ; if on the ground, reset the turn counter
+        AND #$04
+        BEQ IN_AIR
+        STZ $151C, x
+        STZ $AA, x
+        BRA X_TIME
+
