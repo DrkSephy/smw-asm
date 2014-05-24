@@ -100,17 +100,36 @@ ON_CEILING LDA SPRITE_STATE, x ; rebuilding the sprite
     BRA CONTINUE
 
 UPSIDE_WAIT LDA SPRITE_STATE, x ; rebuilding the sprite
+    
     CMP #$04
     BNE WHEN_SPINNING       ; is the sprite in the spinning state? 
     JSR UPSIDE_GFX          ; graphics routine when extra bit is set
     BRA CONTINUE
 
 WHEN_SPINNING LDA SPRITE_STATE, x
+    
     CMP #$06
-    BNE WHEN_KILLED
+    BNE WHEN_KILLED         ; is the sprite being killed? 
+    JSR SHELL_GFX           ; if not, play shell graphics routine
+    BRA CONTINUE
+
+WHEN_KILLED LDA SPRITE_STATE, x
+    
+    CMP #$09
+    BNE TOSS_FIREBALLS      ; did the sprite get hit by fireballs?
+    JSR SHELL_GFX           ; if so, play shell graphics routine
+    BRA CONTINUE    
+
+TOSS_FIREBALLS
+
+    LDA SPRITE_STATE, x
+    CMP $#07
+    BNE CLEAR
     JSR SHELL_GFX
     BRA CONTINUE
+
     
+
 
 
 
