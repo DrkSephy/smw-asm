@@ -357,3 +357,25 @@ IncreaseHop2:
             INC $1528, x            ; increase timer
 
 RETURN3     RTS
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                           State 2                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+RISING
+            JSR SUB_HORZ_POS        ; determine if mario is close and act accordingly
+            TYA
+            STA $157C, x
+            LDA FREEZE_TIMER, x     ; if sprite is still waiting on ground, return
+            BNE RETURN4
+            LDA SPRITE_Y_POS, x     ; check if the sprite is in original position
+            CMP ORIG_Y_POS, x
+            BNE RISE
+            INC SPRITE_STATE, x
+            RTS
+
+RISE        LDA #RISE_SPEED         ; set rising speed and apply it
+            STA SPRITE_Y_SPEED, x
+            JSL $01801A
+
+RETURN4     RTS
