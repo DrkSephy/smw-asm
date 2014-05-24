@@ -294,3 +294,30 @@ Hop:
 IncreaseHop:
 
         INC $1504, x            ; increase timer 
+
+RETURN2 RTS
+
+RANDOM  PHX
+        PHP
+        SEP #$30
+        PHA
+        JSL $01ACF9             ; random number generation routine
+        PLX
+        CPX #$FF                ;\ if max is FF, handle this exception
+        BNE NORMALRT            ;|
+        LDA #$148B              ;|
+        BRA ENDRANDOM           ;/
+
+NORMALRT INX                    ; increase by plus 1
+        LDA #$148B              ;\
+        STA $4204               ;| Multiply with hardware registers
+        STX $4203               ;|
+        NOP                     ;|
+        NOP                     ;|
+        NOP                     ;|
+        NOP                     ;/
+        LDA $4217
+
+ENDRANDOM PLP
+        PLX
+        RTL
