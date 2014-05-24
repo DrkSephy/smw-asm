@@ -531,4 +531,52 @@ DONT_INC_SPEED
 
 RETURN6     RTS
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                           State 6                       ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+SPINNING
+
+NOSPRC      JSR SUB_HORZ_POS
+            TYA
+            LDA XMAX, y
+            CMP $B6, x
+            BEQ SETSPD
+            LDA $86, x
+            CLC
+            ADC XACCEL, y
+            STA $B6, x
+
+SETSPD      LDA $1588, x
+            AND #$04
+            BEQ NOWALLS
+            STZ $AA, x
+
+NOWALLS     LDA $1588, x
+            AND #$03
+            BEQ INAIR
+            LDA $B6, x
+            EOR #$FF
+            INC A
+            STA $B6, x
+
+NOSMASH     LDA $77
+            AND #$04
+            BEQ INITALIZE
+            LDA #$20
+            STA $18BD
+
+INITALIZE
+            
+            STZ $1504, x            ; reset timer
+            LDA #$02
+            STA SPRITE_STATE, x
+
+INAIR
+            
+            JSL $01802A
+
+RETURN7     
+            
+            RTS
 
