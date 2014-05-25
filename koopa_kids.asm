@@ -840,28 +840,78 @@ CODE_01BFB4:
 
 CODE_01BFC6:        
 
-            LDA $00                 ;\ if horizontal distance was inverted,
-            LDY $02                 ; | invert $00
-            BEQ CODE_01BFD3         ; |
-            EOR #$FF                ; |
-            CLC                     ; |
-            ADC #$01                ; |
-            STA $00                 ;/
+            LDA $00                     ;\ if horizontal distance was inverted,
+            LDY $02                     ; | invert $00
+            BEQ CODE_01BFD3             ; |
+            EOR #$FF                    ; |
+            CLC                         ; |
+            ADC #$01                    ; |
+            STA $00                     ;/
 
 CODE_01BFD3:        
 
-            LDA $01                 ;\ if vertical distance was inverted,
-            LDY $03                 ;| invert $01
-            BEQ CODE_01BFE0         ; |
-            EOR #$FF                ; |
-            CLC                     ; |
-            ADC #$01                ; |
-            STA $01                 ;/
+            LDA $01                     ;\ if vertical distance was inverted,
+            LDY $03                     ;| invert $01
+            BEQ CODE_01BFE0             ; |
+            EOR #$FF                    ; |
+            CLC                         ; |
+            ADC #$01                    ; |
+            STA $01                     ;/
 
 CODE_01BFE0:        
 
-            PLY                 ;\ retrieve Magikoopa and magic sprite indexes
-            PLX                 ;/
-            RTS                 ; return
+            PLY                         ;\ retrieve Magikoopa and magic sprite indexes
+            PLX                         ;/
+            RTS                         ; return
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                   Projectile Routine                    ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+X_SPEED_HAMMERa     dcb $10, $F0
+Y_SPEED_HAMMERa     dcb $07, $07
+
+SUB_FIRE_THROW
+                    LDY #$E8                ;A:0218 X:0009 Y:0009 D:0000 DB:03 S:01E8 P:envMXdizcHC:0522 VC:104 00 FL:19452
+                    LDA $157C,x             ;A:0218 X:0009 Y:00E8 D:0000 DB:03 S:01E8 P:eNvMXdizcHC:0538 VC:104 00 FL:19452
+                    BNE LABEL9a             ;A:0201 X:0009 Y:00E8 D:0000 DB:03 S:01E8 P:envMXdizcHC:0570 VC:104 00 FL:19452
+                    LDY #$18                ;A:0200 X:0009 Y:00E8 D:0000 DB:03 S:01E8 P:envMXdiZcHC:0210 VC:098 00 FL:21239
+
+LABEL9a             STY $00                 ;A:0201 X:0009 Y:00E8 D:0000 DB:03 S:01E8 P:envMXdizcHC:0592 VC:104 00 FL:19452
+                    LDY #$07                ;A:0201 X:0009 Y:00E8 D:0000 DB:03 S:01E8 P:envMXdizcHC:0616 VC:104 00 FL:19452
+
+LABEL8a             LDA $170B,y             ;A:0201 X:0009 Y:0007 D:0000 DB:03 S:01E8 P:envMXdizcHC:0632 VC:104 00 FL:19452
+                    BEQ LABEL7a             ;A:0200 X:0009 Y:0007 D:0000 DB:03 S:01E8 P:envMXdiZcHC:0664 VC:104 00 FL:19452
+                    DEY                     ;A:0204 X:0009 Y:0007 D:0000 DB:03 S:01E8 P:envMXdizcHC:0088 VC:103 00 FL:19638
+                    BPL LABEL8a             ;A:0204 X:0009 Y:0006 D:0000 DB:03 S:01E8 P:envMXdizcHC:0102 VC:103 00 FL:19638
+                    RTS                     ; return
+
+LABEL7a             LDA #$02                ; \ projectile is a fireball
+                    STA $170B,y             ; /
+
+                    LDA $E4,x               ; \ set x position
+                    CLC                     ;  |
+                    ADC #$05                ;  |
+                    STA $171F,y             ;  |
+                    LDA $14E0,x             ;  |
+                    ADC #$00                ;  |
+                    STA $1733,y             ; /
+                    
+                    LDA $D8,x               ; \ set y position
+                    CLC                     ;  |
+                    ADC #$00                ;  |
+                    STA $1715,y             ;  |
+                    LDA $14D4,x             ;  |
+                    ADC #$00                ;  |
+                    STA $1729,y             ; /
+
+                    LDA #$50
+                    JSR CODE_01BF6A
+                    LDX $15E9
+                    LDA $00
+                    STA $173D,y
+                    LDA $01
+                    STA $1747,y
+
+LABEL6a              RTS
