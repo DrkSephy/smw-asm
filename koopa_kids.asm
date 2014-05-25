@@ -1,13 +1,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;                    David Leonard                       ;
-;                Description: Iggy Koopa                 ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+; David Leonard
+;
+; Super Mario World Koopa Kids 
+;
+; This file contains an implementation which can be 
+; shared across all of the koopa kid boss fights in
+; super mario world. 
+;
 ; Uses first extra bit: NO
 ; Extra Property Byte 1
 ;   - bit 0: Enable Spin Killing
 ;   - bit 1: stay on ledges
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     SPRITE_X_SPEED = $B6
