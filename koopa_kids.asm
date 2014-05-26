@@ -1071,5 +1071,28 @@ PREPARE_FIRE:
         STA $03                     ;/
         BRA DONE_WALKING
 
+WHEN_DROPPING:
+        
+        LDA SPRITE_STATE, x
+        CMP #$05
+        BNE DONE_WALKING
+        LDA $03
+        CLC
+        ADC #$60
+        STA $03
 
+DONE_WALKING:
+
+        LDA $157C, x
+        STA $02                     ; store direction to $02 for use with property routine later
+        BNE NoAdd
+        LDA $03                     ;\
+        CLC                         ;| if sprite is facing left
+        ADC #$80                    ;| add 8 more bytes to the table
+        STA $03                     ;/ so we can invert XDISP and not mess up the sprite's appearance
+
+NoAdd:
+
+        PHX                         ;\ push sprite index
+        LDX #$07                    ;/ and load X with number of tiles to loop through
 
