@@ -1035,15 +1035,30 @@ XDISP:
     db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 3 ;\ LEFT
     db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 4 ;/ LEFT
 
+
 SUB_GFX:
-            JSR GET_DRAW_INFO
-            LDA $14         ;\ Frame counter ..
-            LSR A           ; |
-            LSR A           ; | Add in frame animation rate; More LSRs for slower animation.
-            LSR A
-            AND #$03        ; | 01 means we animate between 2 frames (00 and 01).
-            ASL A           ; | 
-            ASL A           ; | ASL x2 (0-4) makes it switch between the first byte and fifth byte
-            ASL A
-            STA $03         ;/ i.e. first animation and second animation. The result is stored into $03.
+
+        JSR GET_DRAW_INFO
+        LDA $14         ;\  frame counter ..
+        LSR A           ; |
+        LSR A           ; | add in frame animation rate; More LSRs for slower animation.
+        LSR A
+        AND #$03        ; | 01 means we animate between 2 frames (00 and 01).
+        ASL A           ; | 
+        ASL A           ; | ASL x2 (0-4) makes it switch between the first byte and fifth byte
+        ASL A
+        STA $03         ;/ i.e. first animation and second animation. The result is stored into $03.
+
+SPIKES_UP:
+
+        LDA $1528, x    ; check if the timer is greater than $60
+        CMP #$80 
+        BCC PREPARE_FIRE
+        LDA $03
+        CLC
+        ADC #$50         ; use stun frames
+        STA #03 
+        BRA DONE_WALKING
+
+
 
