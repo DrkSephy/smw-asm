@@ -1096,3 +1096,49 @@ NoAdd:
         PHX                         ;\ push sprite index
         LDX #$07                    ;/ and load X with number of tiles to loop through
 
+Loop:
+        
+        PHX                         ; Push number of tiles to loop through.
+        TXA                         ;\
+        ORA $03                     ;/ Transfer it to X and add in the "left displacement" if necessary.
+        TAX                         ;\ Get it back into X for an index.
+
+        LDA $00                     ;\
+        CLC                         ; | Apply X displacement of the sprite.
+        ADC XDISP,x                 ; |
+        STA $0300,y                 ;/ 
+
+        LDA $01                     ;\
+        CLC                         ; | Y displacement is added for the Y position, so one tile is higher than the other.
+        ADC YDISP,x                 ; | Otherwise, both tiles would have been drawn to the same position!
+        STA $0301,y                 ; | If X is 00, i.e. first tile, then load the first value from the table and apply that
+                                    ;/ as the displacement. For the second tile, F0 is added to make it higher than the first.
+
+        LDA TILEMAP,x
+        STA $0302,y
+
+        PHX                         ; Push number of times to go through loop + "left" displacement if necessary.
+        LDX $02                     ;\
+        LDA PROPERTIES,x            ; | Set properties based on direction.
+        STA $0303,y                 ;/
+        PLX                         ; Pull number of times to go through loop.
+
+        INY                         ;\
+        INY                         ; | The OAM is 8x8, but our sprite is 16x16 ..
+        INY                         ; | So increment it 4 times.
+        INY                         ;/
+            
+        PLX                         ; Pull current tile back.
+        DEX                         ; After drawing this tile, decrease number of tiles to go through loop. If the second tile
+                                    ; is drawn, then loop again to draw the first tile.
+
+        BPL Loop                    ; Loop until X becomes negative (FF).
+        
+        PLX                         ; Pull back the sprite index! We pushed it at the beginning of the routine.
+
+        LDY #$02                    ; Y ends with the tile size .. 02 means it's 16x16
+        LDA #$07                    ; A -> number of tiles drawn - 1.
+                                    ; I drew 2 tiles, so 2-1 = 1. A = 01.
+
+        JSL $01B7B3                 ; Call the routine that draws the sprite.
+        RTS                         ; Never forget this!
