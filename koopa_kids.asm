@@ -1142,3 +1142,122 @@ Loop:
 
         JSL $01B7B3                 ; Call the routine that draws the sprite.
         RTS                         ; Never forget this!
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                  Universal Graphics Routine             ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+PROPERTIESU: db $FF,$BF
+
+;The tables must now have 16 bytes.
+;THE LAST 8 ARE ONLY CREATED BECAUSE OF XDISP.
+
+;0-4 BYTE   - FRAME 1 RIGHT
+;4-8 BYTE   - FRAME 2 RIGHT
+;8-12 BYTE  - FRAME 1 LEFT
+;12-16 BYTE - FRAME 2 LEFT
+
+TILEMAPU:
+    db $00,$02,$20,$22,$40,$42,$60,$62 ; WALKING 1 ;\ RIGHT
+    db $00,$02,$24,$26,$44,$46,$64,$66 ; WALKING 2 ;\ RIGHT
+    db $00,$02,$28,$2A,$48,$4A,$68,$6A ; WALKING 3 ;\ RIGHT
+    db $00,$02,$24,$26,$44,$46,$64,$66 ; WALKING 4 ;\ RIGHT
+    db $00,$02,$A0,$A2,$C0,$C2,$E0,$E2 ; WALKING 1 ;\ RIGHT
+    db $00,$02,$A0,$A2,$C0,$C2,$E0,$E2 ; WALKING 2 ;\ RIGHT
+    db $00,$02,$A8,$AA,$C8,$CA,$E8,$EA ; WALKING 3 ;\ RIGHT
+    db $00,$02,$A8,$AA,$C8,$CA,$E8,$EA ; WALKING 4 ;\ RIGHT
+    db $00,$02,$A4,$A6,$C4,$C6,$E4,$E6 ; WALKING 1 ;\ RIGHT
+    db $00,$02,$A4,$A6,$C4,$C6,$E4,$E6 ; WALKING 2 ;\ RIGHT
+    db $00,$02,$A4,$A6,$C4,$C6,$E4,$E6 ; WALKING 3 ;\ RIGHT
+    db $00,$02,$A4,$A6,$C4,$C6,$E4,$E6 ; WALKING 4 ;\ RIGHT
+    db $00,$02,$2C,$2E,$4C,$4E,$6C,$6E
+    db $00,$02,$2C,$2E,$4C,$4E,$6C,$6E
+    db $00,$02,$2C,$2E,$4C,$4E,$6C,$6E
+    db $00,$02,$2C,$2E,$4C,$4E,$6C,$6E
+
+    db $00,$02,$20,$22,$40,$42,$60,$62 ; WALKING 1 ;\ LEFT
+    db $00,$02,$24,$26,$44,$46,$64,$66 ; WALKING 2 ;\ LEFT
+    db $00,$02,$28,$2A,$48,$4A,$68,$6A ; WALKING 3 ;\ LEFT
+    db $00,$02,$24,$26,$44,$46,$64,$66 ; WALKING 4 ;\ LEFT
+    db $00,$02,$A0,$A2,$C0,$C2,$E0,$E2 ; WALKING 1 ;\ LEFT
+    db $00,$02,$A0,$A2,$C0,$C2,$E0,$E2 ; WALKING 2 ;\ LEFT
+    db $00,$02,$A8,$AA,$C8,$CA,$E8,$EA ; WALKING 3 ;\ LEFT
+    db $00,$02,$A8,$AA,$C8,$CA,$E8,$EA ; WALKING 4 ;\ LEFT
+    db $00,$02,$A4,$A6,$C4,$C6,$E4,$E6 ; WALKING 1 ;\ LEFT
+    db $00,$02,$A4,$A6,$C4,$C6,$E4,$E6 ; WALKING 2 ;\ LEFT
+    db $00,$02,$A4,$A6,$C4,$C6,$E4,$E6 ; WALKING 3 ;\ LEFT
+    db $00,$02,$A4,$A6,$C4,$C6,$E4,$E6 ; WALKING 4 ;\ LEFT
+    db $00,$02,$2C,$2E,$4C,$4E,$6C,$6E
+    db $00,$02,$2C,$2E,$4C,$4E,$6C,$6E
+    db $00,$02,$2C,$2E,$4C,$4E,$6C,$6E
+    db $00,$02,$2C,$2E,$4C,$4E,$6C,$6E
+
+YDISPU:
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 1 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 2 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 3 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 4 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 1 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 2 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 3 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 4 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 1 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 2 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 3 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 4 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 1 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 2 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 3 ;\ RIGHT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 4 ;\ RIGHT
+
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 1 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 2 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 3 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 4 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 1 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 2 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 3 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 4 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 1 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 2 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 3 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 4 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 1 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 2 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 3 ;\ LEFT
+    db $0D,$0D,$FD,$FD,$ED,$ED,$DD,$DD ; WALKING 4 ;\ LEFT
+ 
+XDISPU:
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 1 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 2 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 3 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 4 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 1 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 2 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 3 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 4 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 1 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 2 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 3 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 4 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 1 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 2 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 3 ;\ RIGHT
+    db $00,$10,$00,$10,$00,$10,$00,$10 ; WALKING 4 ;\ RIGHT
+
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 1 ;\ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 2 ;/ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 3 ;\ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 4 ;/ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 1 ;\ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 2 ;/ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 3 ;\ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 4 ;/ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 1 ;\ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 2 ;/ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 3 ;\ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 4 ;/ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 1 ;\ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 2 ;/ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 3 ;\ LEFT
+    db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 4 ;/ LEFT
