@@ -1261,3 +1261,109 @@ XDISPU:
     db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 2 ;/ LEFT
     db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 3 ;\ LEFT
     db $10,$00,$10,$00,$10,$00,$10,$00 ; WALKING 4 ;/ LEFT
+
+UPSIDE_GFX:
+        
+        JSR GET_DRAW_INFO
+
+        LDA $14                 ;\ Frame counter ..
+        LSR A                   ; |
+        LSR A                   ; | Add in frame animation rate; More LSRs for slower animation.
+        LSR A
+        AND #$03                ; | 01 means we animate between 2 frames (00 and 01).
+        ASL A                   ; | 
+        ASL A                   ; | ASL x2 (0-4) makes it switch between the first byte and fifth byte
+        ASL A
+        STA $03                 ;/ i.e. first animation and second animation. The result is stored into $03.
+
+SPIKES_UPU:
+
+        LDA $1528,x             ; Check if the timer is greater than $60
+        CMP #$80
+        BCC PREPARE_FIREU
+        LDA $03
+        CLC
+        ADC #$40                ; | ...use stun frames.
+        STA $03                 ; /
+        BRA DONE_WALKINGU
+
+PREPARE_FIREU:
+
+        LDA SPRITE_STATE,x      ; if yelling at Mario
+        CMP #$04
+        BNE WHEN_RISING         ; |
+        LDA $03                 ; |
+        CLC                     ; |
+        ADC #$20                ; | ...use stun frames.
+        STA $03                 ; /
+        BRA DONE_WALKINGU
+
+WHEN_RISING
+
+        LDA SPRITE_STATE,x
+        CMP #$02
+        BNE DONE_WALKINGU
+        LDA $03
+        CLC
+        ADC #$60
+        STA $03
+    
+DONE_WALKINGU
+
+        LDA $157C,x
+        STA $02                 ; Store direction to $02 for use with property routine later.
+        BNE NoAddU
+        LDA $03                 ;\
+        CLC                     ; | If sprite faces left ..
+        ADC #$80                ; | Adding 8 more bytes to the table.
+        STA $03                 ;/ So we can invert XDISP to not mess up the sprite's appearance.
+
+NoAddU:
+        PHX                     ;\ Push sprite index ..
+        LDX #$07                ;/ And load X with number of tiles to loop through.
+
+LoopU:
+        PHX                     ; Push number of tiles to loop through.
+        TXA                     ;\
+        ORA $03                 ;/ Transfer it to X and add in the "left displacement" if necessary.
+        TAX                     ;\ Get it back into X for an index.
+
+        LDA $00                 ;\
+        CLC                     ; | Apply X displacement of the sprite.
+        ADC XDISPU,x            ; |
+        STA $0300,y             ;/ 
+
+        LDA $01                 ;\
+        CLC                     ; | Y displacement is added for the Y position, so one tile is higher than the other.
+        ADC YDISPU,x            ; | Otherwise, both tiles would have been drawn to the same position!
+        STA $0301,y             ; | If X is 00, i.e. first tile, then load the first value from the table and apply that
+                                ;/ as the displacement. For the second tile, F0 is added to make it higher than the first.
+
+        LDA TILEMAPU,x
+        STA $0302,y
+
+        PHX                     ; Push number of times to go through loop + "left" displacement if necessary.
+        LDX $02                 ;\
+        LDA PROPERTIESU,x       ; | Set properties based on direction.
+        STA $0303,y             ;/
+        PLX                     ; Pull number of times to go through loop.
+
+        INY                     ;\
+        INY                     ; | The OAM is 8x8, but our sprite is 16x16 ..
+        INY                     ; | So increment it 4 times.
+        INY                     ;/
+            
+        PLX                     ; Pull current tile back.
+        DEX                     ; After drawing this tile, decrease number of tiles to go through loop. If the second tile
+                                ; is drawn, then loop again to draw the first tile.
+
+        BPL LoopU               ; Loop until X becomes negative (FF).
+        
+        PLX                     ; Pull back the sprite index! We pushed it at the beginning of the routine.
+
+        LDY #$02                ; Y ends with the tile size .. 02 means it's 16x16
+        LDA #$07                ; A -> number of tiles drawn - 1.
+                                ; I drew 2 tiles, so 2-1 = 1. A = 01.
+
+        JSL $01B7B3             ; Call the routine that draws the sprite.
+        RTS                     ; Never forget this!
