@@ -1367,3 +1367,95 @@ LoopU:
 
         JSL $01B7B3             ; Call the routine that draws the sprite.
         RTS                     ; Never forget this!
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;                  Shell Graphics Routine                 ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;The tables must now have 16 bytes.
+;THE LAST 8 ARE ONLY CREATED BECAUSE OF XDISP.
+
+;0-4 BYTE   - FRAME 1 RIGHT
+;4-8 BYTE   - FRAME 2 RIGHT
+;8-12 BYTE  - FRAME 1 LEFT
+;12-16 BYTE - FRAME 2 LEFT
+
+SHELL_TILEMAP:
+
+        dcb $84,$86,$88,$8A ; SPINNING 1    ;\ RIGHT
+        dcb $CC,$CE,$EC,$EE ; SPINNING 2    ; | RIGHT
+        dcb $84,$86,$88,$8A ; SPINNING 3    ; | RIGHT
+        dcb $CC,$CE,$EC,$EE ; SPINNING 4    ;/ RIGHT
+        dcb $84,$86,$88,$8A ; FIRING 1      ;\ RIGHT
+        dcb $CC,$CE,$EC,$EE ; FIRING 2      ; | RIGHT
+        dcb $84,$86,$88,$8A ; FIRING 3      ; | RIGHT
+        dcb $CC,$CE,$EC,$EE ; FIRING 4      ;/ RIGHT
+
+        dcb $84,$86,$88,$8A ; SPINNIN       ;\ RIGHT
+        dcb $CC,$CE,$EC,$EE ; SPINNING 2    ; | RIGHT
+        dcb $84,$86,$88,$8A ; SPINNING 3    ; | RIGHT
+        dcb $CC,$CE,$EC,$EE ; SPINNING 4    ;/ RIGHT
+        dcb $84,$86,$88,$8A ; FIRING 1      ;\ RIGHT
+        dcb $CC,$CE,$EC,$EE ; FIRING 2      ; | RIGHT
+        dcb $84,$86,$88,$8A ; FIRING 3      ; | RIGHT
+        dcb $CC,$CE,$EC,$EE ; FIRING 4      ;/ RIGHT
+
+VERT_DISP:  
+        dcb $F0,$F0,$00,$00 ; SPINNING 1    ;\ RIGHT
+        dcb $F0,$F0,$00,$00 ; SPINNING 2    ; | RIGHT
+        dcb $F0,$F0,$00,$00 ; SPINNING 3    ; | RIGHT
+        dcb $F0,$F0,$00,$00 ; SPINNING 4    ;/ RIGHT
+        dcb $ED,$ED,$DD,$DD ; FIRING 1      ;\ RIGHT
+        dcb $ED,$ED,$DD,$DD ; FIRING 2      ; | RIGHT
+        dcb $ED,$ED,$DD,$DD ; FIRING 3      ; | RIGHT
+        dcb $ED,$ED,$DD,$DD ; FIRING 4      ;/ RIGHT
+
+        dcb $F0,$F0,$00,$00 ; SPINNIN       ;\ LEFT
+        dcb $F0,$F0,$00,$00 ; SPINNING 2    ; | LEFT
+        dcb $F0,$F0,$00,$00 ; SPINNING 3    ; | LEFT
+        dcb $F0,$F0,$00,$00 ; SPINNING 4    ;/ LEFT
+        dcb $ED,$ED,$DD,$DD ; FIRING 1      ;\ LEFT
+        dcb $ED,$ED,$DD,$DD ; FIRING 2      ; | LEFT
+        dcb $ED,$ED,$DD,$DD ; FIRING 3      ; | LEFT
+        dcb $ED,$ED,$DD,$DD ; FIRING 4      ;/ LEFT
+
+HORZ_DISP:  
+
+        dcb $00,$10,$00,$10 ; SPINNING 1    ;\ RIGHT
+        dcb $00,$10,$00,$10 ; SPINNING 2    ; | RIGHT
+        dcb $10,$00,$10,$00 ; SPINNING 3    ; | RIGHT
+        dcb $10,$00,$10,$00 ; SPINNING 4    ;/ RIGHT
+        dcb $00,$10,$00,$10 ; FIRING 1      ;\ RIGHT
+        dcb $00,$10,$00,$10 ; FIRING 2      ; | RIGHT
+        dcb $10,$00,$10,$00 ; FIRING 3      ; | RIGHT
+        dcb $10,$00,$10,$00 ; FIRING 4      ;/ RIGHT
+
+        dcb $10,$00,$10,$00 ; SPINNING 1    ;\ LEFT
+        dcb $10,$00,$10,$00 ; SPINNING 2    ; | LEFT
+        dcb $00,$10,$00,$10 ; SPINNING 3    ; | LEFT
+        dcb $00,$10,$00,$10 ; SPINNING 4    ;/ LEFT
+        dcb $10,$00,$10,$00 ; FIRING 1      ;\ LEFT
+        dcb $10,$00,$10,$00 ; FIRING 2      ; | LEFT
+        dcb $00,$10,$00,$10 ; FIRING 3      ; | LEFT
+        dcb $00,$10,$00,$10 ; FIRING 4      ;/ LEFT
+
+SHELL_PROP
+
+        dcb $3F,$3F,$3F,$3F ; SPINNING 1    ;\ RIGHT
+        dcb $3F,$3F,$3F,$3F ; SPINNING 2    ; | RIGHT
+        dcb $7F,$7F,$7F,$7F ; SPINNING 3    ; | RIGHT
+        dcb $7F,$7F,$7F,$7F ; SPINNING 4    ;/ RIGHT
+        dcb $BF,$BF,$BF,$BF ; FIRING 1      ;\ RIGHT
+        dcb $BF,$BF,$BF,$BF ; FIRING 2      ; | RIGHT
+        dcb $FF,$FF,$FF,$FF ; FIRING 3      ; | RIGHT
+        dcb $FF,$FF,$FF,$FF ; FIRING 4      ;/ RIGHT
+
+        dcb $7F,$7F,$7F,$7F ; SPINNING 1    ;\ LEFT
+        dcb $7F,$7F,$7F,$7F ; SPINNING 2    ; | LEFT
+        dcb $3F,$3F,$3F,$3F ; SPINNING 3    ; | LEFT 
+        dcb $3F,$3F,$3F,$3F ; SPINNING 4    ;/ LEFT
+        dcb $FF,$FF,$FF,$FF ; FIRING 1      ;\ LEFT
+        dcb $FF,$FF,$FF,$FF ; FIRING 2      ; | LEFT
+        dcb $BF,$BF,$BF,$BF ; FIRING 3      ; | LEFT 
+        dcb $BF,$BF,$BF,$BF ; FIRING 4      ;/ LEFT
+
