@@ -1482,3 +1482,71 @@ IN_SHELL:
         ADC #$10                            ; | ...use stun frames.
         STA $03                             ; /
     ;   BRA DONE_WALKING3
+
+DONE_WALKING3:
+
+        LDA $157C,x
+        STA $02         ; Store direction to $02 for use with property routine later.
+        BNE LOOP_START
+        LDA $03         ;\
+        CLC         ; | If sprite faces left ..
+        ADC #$20        ; | Adding 16 more bytes to the table.
+        STA $03         ;/ So we can invert XDISP to not mess up the sprite's appearance.
+
+LOOP_START:
+
+        PHX                     ; push sprite index
+        LDX #$03                ; loop counter = (number of tiles per frame) - 1
+
+LOOP_START_2:
+
+        PHX                     ; push current tile number
+        
+        TXA                     ; \ X = index of frame start + current tile
+        CLC                     ;  |
+        ADC $03                 ;  |
+        TAX                     ; /
+        
+        PHY                     ; \
+        TYA                     ; |
+        LSR A                   ; |
+        LSR A                   ; |
+        TAY                     ; | Set tile to be 16x16 ($02)
+        LDA #$02                ; |
+        STA $0460,y             ; |
+        PLY                     ; /
+        
+        LDA $00                 ; \ tile x position = sprite x location ($00)
+        CLC                     ;  |
+        ADC HORZ_DISP,x         ;  |
+        STA $0300,y             ; /
+        
+        LDA $01                 ; \ tile y position = sprite y location ($01) + tile displacement
+        CLC                     ;  |
+        ADC VERT_DISP,x         ;  |
+        STA $0301,y             ; /
+        
+        LDA SHELL_TILEMAP,x           ; \ store tile
+        STA $0302,y             ; / 
+        
+        PHX
+        LDX $15E9
+        LDA $15F6,x             ; get palette info
+        PLX
+        ORA SHELL_PROP,x        ; flip tile if necessary
+        ORA $64                 ; add in tile priority of level
+        STA $0303,y             ; store tile properties
+        
+        PLX                     ; \ pull, X = current tile of the frame we're drawing
+        INY                     ;  | increase index to sprite tile map ($300)...
+        INY                     ;  |    ...we wrote 1 16x16 tile...
+        INY                     ;  |    ...sprite OAM is 8x8...
+        INY                     ;  |    ...so increment 4 times
+        DEX                     ;  | go to next tile of frame and loop
+        BPL LOOP_START_2        ; / 
+
+        PLX                     ; pull, X = sprite index
+        LDY #$FF                ; \ We've already set 460, so use FF!
+        LDA #$03                ; | A = number of tiles drawn - 1
+        JSL $01B7B3             ; / don't draw if offscreen
+        RTS                     ; return
